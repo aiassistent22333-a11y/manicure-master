@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APPOLLIX NAILS | Санкт-Петербург</title>
+    
+    <!-- Шрифты: Inter и Cormorant Garamond -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        serif: ['"Cormorant Garamond"', 'serif'],
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'brand-black': '#2D2424',
+                        'brand-pink': '#F9EAE1',
+                        'brand-pink-dark': '#B76E79',
+                        'brand-grey': '#8E8080',
+                        'brand-grey-light': '#F2E8E8',
+                        'brand-grey-button': '#A68B8B',
+                        'brand-grey-text': '#5A4A4A',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Плавное появление при скролле */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px) scale(0.98);
+            transition: all 1.2s cubic-bezier(0.21, 1.02, 0.49, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        /* Эффект зернистости */
+        .grain-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* Анимация фона */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .blob {
+            position: absolute;
+            width: 60vw;
+            height: 60vw;
+            max-width: 800px;
+            max-height: 800px;
+            filter: blur(100px);
+            border-radius: 50%;
+            animation: float 25s infinite alternate ease-in-out;
+            opacity: 0.5;
+        }
+
+        .blob-1 { top: -10%; left: -10%; background: radial-gradient(circle, #F9EAE1 0%, rgba(249, 234, 225, 0) 70%); }
+        .blob-2 { bottom: -10%; right: -5%; animation-duration: 30s; background: radial-gradient(circle, #B76E79 0%, rgba(183, 110, 121, 0) 70%); }
+        .blob-3 { top: 30%; left: 10%; animation-duration: 20s; animation-delay: -5s; background: radial-gradient(circle, #EBD4CB 0%, rgba(235, 212, 203, 0) 70%); }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+            50% { transform: translate(5%, 7%) scale(1.05) rotate(5deg); }
+            100% { transform: translate(-2%, -5%) scale(0.95) rotate(-5deg); }
+        }
+
+        /* ЕДИНАЯ АНИМАЦИЯ ПЕРЕЛИВА */
+        @keyframes luxuryShine {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+
+        /* Применяем градиент к тексту */
+        .text-luxury-gradient {
+            background: linear-gradient(
+                to right, 
+                #9B5D65 0%, 
+                #B76E79 25%, 
+                #D4AF37 50%, 
+                #B76E79 75%, 
+                #9B5D65 100%
+            );
+            background-size: 200% auto;
+            color: transparent;
+            -webkit-background-clip: text;
+            background-clip: text;
+            animation: luxuryShine 7s linear infinite;
+        }
+
+        /* Градиент для кнопок */
+        .btn-luxury-gradient {
+            background-image: linear-gradient(
+                to right, 
+                #9B5D65 0%, 
+                #B76E79 25%, 
+                #D4AF37 50%, 
+                #B76E79 75%, 
+                #9B5D65 100%
+            ) !important;
+            background-size: 200% auto !important;
+            animation: luxuryShine 7s linear infinite !important;
+            color: white !important;
+            border: none !important;
+            transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.5s ease !important;
+            box-shadow: 0 4px 15px rgba(183, 110, 121, 0.2) !important;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-luxury-gradient:hover {
+            transform: translateY(-8px) scale(1.02) !important;
+            box-shadow: 0 20px 40px -10px rgba(183, 110, 121, 0.5) !important;
+        }
+
+        /* Плавающее изображение в Hero */
+        .floating-img {
+            animation: softFloat 6s infinite ease-in-out;
+        }
+
+        @keyframes softFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        /* Кастомный скроллбар */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #F9EAE1; }
+        ::-webkit-scrollbar-thumb { background: #B76E79; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-brand-pink text-brand-black font-sans antialiased relative overflow-x-hidden">
+
+    <!-- Анимированный фон -->
+    <div class="bg-animation">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <!-- Слой с текстурой бумаги -->
+    <div class="grain-overlay"></div>
+
+    <!-- 1. HERO SECTION -->
+    <section class="min-h-screen flex flex-col pt-8 md:pt-16 lg:pt-20 relative z-10 bg-white/40 backdrop-blur-[2px]">
+        
+        <div class="w-full text-center px-6 mb-6 md:mb-12 reveal">
+            <p class="font-serif italic text-brand-pink-dark text-xl sm:text-2xl md:text-3xl lg:text-4xl tracking-[0.2em] md:tracking-[0.4em] uppercase opacity-80">
+                Будь красива до кончиков ногтей
+            </p>
+        </div>
+
+        <div class="flex flex-col md:flex-row items-center flex-grow max-w-7xl mx-auto w-full px-4 sm:px-8">
+            <div class="w-full md:w-1/2 p-4 md:p-8 reveal">
+                <div class="aspect-square bg-brand-pink-dark overflow-hidden rounded-2xl floating-img shadow-2xl shadow-brand-pink-dark/20 border-4 border-white/50 max-w-md mx-auto md:max-w-none">
+                    <img src="https://images.unsplash.com/photo-1588058365548-9efe5acb80d5?q=80&w=1000&auto=format&fit=crop" 
+                         alt="Мастер" 
+                         decoding="async"
+                         class="w-full h-full object-cover">
+                </div>
+            </div>
+            
+            <div class="w-full md:w-1/2 p-6 md:p-12 lg:p-20 flex flex-col justify-center text-center md:text-left reveal" style="transition-delay: 200ms;">
+                <h1 class="font-serif text-5xl sm:text-6xl lg:text-8xl leading-[1.1] mb-6 uppercase text-luxury-gradient">APPOLLIX<br>NAILS</h1>
+                <h2 class="text-xl sm:text-2xl font-light mb-6 tracking-wide">Альбина<br><span class="opacity-60 text-base sm:text-lg">Санкт-Петербург</span></h2>
+                <p class="text-brand-grey-text mb-10 uppercase tracking-[0.2em] text-xs sm:text-sm font-light">мастер маникюра & наращивания</p>
+                
+                <a href="#prices" class="btn-animate btn-luxury-gradient text-white py-5 px-12 text-center uppercase tracking-[0.3em] text-xs rounded-full w-full max-w-xs mx-auto md:mx-0 shadow-lg">
+                    Прайс
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. ОБО МНЕ -->
+    <section class="py-20 px-6 sm:px-12 md:px-20 max-w-5xl mx-auto reveal bg-white/40 relative z-10 backdrop-blur-sm lg:rounded-3xl lg:my-10">
+        <div class="flex items-center mb-10">
+            <h3 class="font-serif text-3xl sm:text-4xl uppercase text-luxury-gradient mr-8 shrink-0">Обо мне</h3>
+            <div class="flex-grow h-[1px] bg-gradient-to-r from-brand-pink-dark to-transparent opacity-50"></div>
+        </div>
+        
+        <ul class="space-y-8 text-brand-grey-text">
+            <li class="flex items-start group">
+                <span class="text-brand-pink-dark mr-6 text-xl transition-transform group-hover:translate-x-2 shrink-0">→</span>
+                <p class="text-base sm:text-lg leading-relaxed font-light">занимаюсь ногтями с 2021 года</p>
+            </li>
+            <li class="flex items-start group">
+                <span class="text-brand-pink-dark mr-6 text-xl transition-transform group-hover:translate-x-2 shrink-0">→</span>
+                <p class="text-base sm:text-lg leading-relaxed font-light">работаю в центре Санкт-Петербурга</p>
+            </li>
+            <li class="flex items-start group">
+                <span class="text-brand-pink-dark mr-6 text-xl transition-transform group-hover:translate-x-2 shrink-0">→</span>
+                <p class="text-base sm:text-lg leading-relaxed font-light">обожаю создавать интересные дизайны и радовать своих клиентов красивыми и ровными ногтями</p>
+            </li>
+        </ul>
+    </section>
+
+    <!-- 3. МОИ РАБОТЫ -->
+    <section class="py-20 px-4 sm:px-12 md:px-20 max-w-7xl mx-auto reveal bg-white/40 relative z-10 backdrop-blur-sm lg:rounded-3xl lg:my-10">
+        <div class="flex items-center mb-10 justify-end text-right">
+            <div class="flex-grow h-[1px] bg-gradient-to-l from-brand-pink-dark to-transparent opacity-50 mr-8"></div>
+            <h3 class="font-serif text-3xl sm:text-4xl uppercase text-luxury-gradient shrink-0">Мои работы</h3>
+        </div>
+        <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
+            <div class="aspect-square bg-brand-pink-dark overflow-hidden rounded-xl shadow-xl border-2 border-white/30">
+                <img src="https://images.unsplash.com/photo-1604654894610-df490c9a55af?auto=format&fit=crop&q=80&w=800" loading="lazy" decoding="async" class="w-full h-full object-cover hover:scale-110 transition-transform duration-1000">
+            </div>
+            <div class="aspect-square bg-brand-pink-dark overflow-hidden rounded-xl shadow-xl border-2 border-white/30">
+                <img src="https://images.unsplash.com/photo-1632345031435-8727f6897d53?auto=format&fit=crop&q=80&w=800" loading="lazy" decoding="async" class="w-full h-full object-cover hover:scale-110 transition-transform duration-1000">
+            </div>
+            <div class="aspect-square bg-brand-pink-dark overflow-hidden rounded-xl shadow-xl border-2 border-white/30">
+                <img src="https://images.unsplash.com/photo-1607779097040-26e80aa78e66?auto=format&fit=crop&q=80&w=800" loading="lazy" decoding="async" class="w-full h-full object-cover hover:scale-110 transition-transform duration-1000">
+            </div>
+            <div class="aspect-square bg-brand-pink-dark overflow-hidden rounded-xl shadow-xl border-2 border-white/30">
+                <img src="https://images.unsplash.com/photo-1519014816548-bf5fe059798b?auto=format&fit=crop&q=80&w=800" loading="lazy" decoding="async" class="w-full h-full object-cover hover:scale-110 transition-transform duration-1000">
+            </div>
+             <div class="aspect-square bg-brand-pink-dark overflow-hidden rounded-xl shadow-xl border-2 border-white/30">
+                <img src="https://images.unsplash.com/photo-1600068037342-64130827796d?auto=format&fit=crop&q=80&w=800" loading="lazy" decoding="async" class="w-full h-full object-cover hover:scale-110 transition-transform duration-1000">
+            </div>
+             <div class="aspect-square bg-brand-pink-dark overflow-hidden rounded-xl shadow-xl border-2 border-white/30">
+                <img src="https://images.unsplash.com/photo-1600639723569-14028c319828?auto=format&fit=crop&q=80&w=800" loading="lazy" decoding="async" class="w-full h-full object-cover hover:scale-110 transition-transform duration-1000">
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. ПРАЙС -->
+    <section id="prices" class="py-20 px-6 sm:px-12 md:px-20 max-w-6xl mx-auto reveal bg-white/40 relative z-10 backdrop-blur-sm lg:rounded-3xl lg:my-10">
+        <h3 class="font-serif text-4xl sm:text-5xl mb-6 uppercase text-luxury-gradient text-center">Прайс</h3>
+        <p class="text-center text-brand-grey-text mb-12 sm:mb-16 text-xs sm:text-sm tracking-widest font-light">В стоимость входит: снятие, маникюр, любой дизайн</p>
+        
+        <div class="space-y-16 lg:space-y-24">
+            <!-- Услуга 1 -->
+            <div class="flex flex-col md:flex-row items-center gap-10 lg:gap-16 group">
+                <div class="w-full md:w-5/12 aspect-[4/5] bg-brand-pink-dark overflow-hidden rounded-2xl shadow-2xl transition-transform group-hover:-translate-y-4 duration-500 border-2 border-white/50 max-w-sm">
+                    <img src="https://images.unsplash.com/photo-1604654894610-df490c9a55af?auto=format&fit=crop&q=80&w=800" 
+                         loading="lazy" decoding="async"
+                         class="w-full h-full object-cover">
+                </div>
+                <div class="w-full md:w-7/12 space-y-8">
+                    <div class="flex justify-between items-center border-b border-brand-pink-dark/30 pb-4">
+                        <span class="text-lg sm:text-xl uppercase tracking-widest text-brand-grey-text font-light">НАРАЩИВАНИЕ ДО 6</span>
+                        <span class="font-serif text-2xl sm:text-3xl text-brand-black">3200р</span>
+                    </div>
+                    <div class="flex justify-between items-center border-b border-brand-pink-dark/30 pb-4">
+                        <span class="text-lg sm:text-xl uppercase tracking-widest text-brand-grey-text font-light">КОРРЕКЦИЯ ДО 6</span>
+                        <span class="font-serif text-2xl sm:text-3xl text-brand-black">2600р</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Услуга 2 -->
+            <div class="flex flex-col md:flex-row-reverse items-center gap-10 lg:gap-16 group">
+                <div class="w-full md:w-5/12 aspect-[4/5] bg-brand-pink-dark overflow-hidden rounded-2xl shadow-2xl transition-transform group-hover:-translate-y-4 duration-500 border-2 border-white/50 max-w-sm">
+                    <img src="https://images.unsplash.com/photo-1632345031435-8727f6897d53?auto=format&fit=crop&q=80&w=800" 
+                         loading="lazy" decoding="async"
+                         class="w-full h-full object-cover">
+                </div>
+                <div class="w-full md:w-7/12 space-y-8">
+                    <div class="flex justify-between items-center border-b border-brand-pink-dark/30 pb-4">
+                        <span class="text-lg sm:text-xl uppercase tracking-widest text-brand-grey-text font-light">НАРАЩИВАНИЕ 7-11</span>
+                        <span class="font-serif text-2xl sm:text-3xl text-brand-black">3700р</span>
+                    </div>
+                    <div class="flex justify-between items-center border-b border-brand-pink-dark/30 pb-4">
+                        <span class="text-lg sm:text-xl uppercase tracking-widest text-brand-grey-text font-light">КОРРЕКЦИЯ 7-11</span>
+                        <span class="font-serif text-2xl sm:text-3xl text-brand-black">3000р</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-16 sm:mt-24">
+             <a href="https://wa.me/79000000000" target="_blank" class="btn-luxury-gradient text-white py-5 px-16 text-center uppercase tracking-[0.3em] text-xs rounded-full inline-block w-full max-w-sm shadow-xl">
+                Записаться
+            </a>
+        </div>
+    </section>
+    
+    <!-- 5. FAQ -->
+    <section class="py-20 px-6 sm:px-12 md:px-20 max-w-4xl mx-auto reveal bg-white/40 relative z-10 backdrop-blur-sm lg:rounded-3xl lg:my-10">
+        <div class="flex items-center mb-10">
+            <div class="flex-grow h-[1px] bg-gradient-to-r from-brand-pink-dark to-transparent opacity-50 mr-8"></div>
+            <h3 class="font-serif text-3xl sm:text-4xl uppercase text-luxury-gradient shrink-0">FAQ</h3>
+        </div>
+
+        <div class="space-y-6 text-brand-grey-text">
+            <details class="group bg-white/50 backdrop-blur-md p-5 rounded-2xl border border-white transition-all hover:shadow-lg">
+                <summary class="flex justify-between items-center cursor-pointer list-none">
+                    <span class="uppercase tracking-widest text-xs sm:text-sm font-medium pr-4">1. Где вы находитесь?</span>
+                    <span class="text-brand-pink-dark transition-transform duration-500 group-open:rotate-45 shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" class="w-6 h-6 sm:w-8 sm:h-8">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        </svg>
+                    </span>
+                </summary>
+                <p class="mt-4 pl-4 leading-relaxed font-light italic text-sm sm:text-base">г. Санкт-Петербург, ул. Спасский переулок, 15/24</p>
+            </details>
+            <details class="group bg-white/50 backdrop-blur-md p-5 rounded-2xl border border-white transition-all hover:shadow-lg">
+                <summary class="flex justify-between items-center cursor-pointer list-none">
+                    <span class="uppercase tracking-widest text-xs sm:text-sm font-medium pr-4">2. Есть ли предоплата?</span>
+                    <span class="text-brand-pink-dark transition-transform duration-500 group-open:rotate-45 shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" class="w-6 h-6 sm:w-8 sm:h-8">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        </svg>
+                    </span>
+                </summary>
+                <p class="mt-6 pl-4 leading-relaxed font-light italic text-sm sm:text-base">Да, предоплата составляет 500р для бронирования места.</p>
+            </details>
+            <details class="group bg-white/50 backdrop-blur-md p-5 rounded-2xl border border-white transition-all hover:shadow-lg">
+                <summary class="flex justify-between items-center cursor-pointer list-none">
+                    <span class="uppercase tracking-widest text-xs sm:text-sm font-medium pr-4">3. Что делать, если потерялся?</span>
+                    <span class="text-brand-pink-dark transition-transform duration-500 group-open:rotate-45 shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" class="w-6 h-6 sm:w-8 sm:h-8">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        </svg>
+                    </span>
+                </summary>
+                <p class="mt-6 pl-4 leading-relaxed font-light italic text-sm sm:text-base">Свяжитесь со мной по телефону или в мессенджере, и я вас сориентирую.</p>
+            </details>
+            <details class="group bg-white/50 backdrop-blur-md p-5 rounded-2xl border border-white transition-all hover:shadow-lg">
+                <summary class="flex justify-between items-center cursor-pointer list-none">
+                    <span class="uppercase tracking-widest text-xs sm:text-sm font-medium pr-4">4. За какое время можно перенести запись?</span>
+                    <span class="text-brand-pink-dark transition-transform duration-500 group-open:rotate-45 shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" class="w-8 h-8">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        </svg>
+                    </span>
+                </summary>
+                <p class="mt-6 pl-4 leading-relaxed font-light italic text-sm sm:text-base">Перенести запись можно не позднее, чем за 24 часа до назначенного времени.</p>
+            </details>
+            <details class="group bg-white/50 backdrop-blur-md p-5 rounded-2xl border border-white transition-all hover:shadow-lg">
+                <summary class="flex justify-between items-center cursor-pointer list-none">
+                    <span class="uppercase tracking-widest text-xs sm:text-sm font-medium pr-4">5. Есть ли обработка у приборов?</span>
+                    <span class="text-brand-pink-dark transition-transform duration-500 group-open:rotate-45 shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" class="w-6 h-6 sm:w-8 sm:h-8">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        </svg>
+                    </span>
+                </summary>
+                <p class="mt-6 pl-4 leading-relaxed font-light italic text-sm sm:text-base">Все инструменты проходят трехступенчатую стерилизацию по нормам СанПиН.</p>
+            </details>
+            <details class="group bg-white/50 backdrop-blur-md p-5 rounded-2xl border border-white transition-all hover:shadow-lg">
+                <summary class="flex justify-between items-center cursor-pointer list-none">
+                    <span class="uppercase tracking-widest text-xs sm:text-sm font-medium pr-4">6. Есть ли гарантия на маникюр?</span>
+                    <span class="text-brand-pink-dark transition-transform duration-500 group-open:rotate-45 shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" class="w-6 h-6 sm:w-8 sm:h-8">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        </svg>
+                    </span>
+                </summary>
+                <p class="mt-6 pl-4 leading-relaxed font-light italic text-sm sm:text-base">Да, гарантия на покрытие составляет 7 дней.</p>
+            </details>
+        </div>
+    </section>
+
+    <!-- БЛОК С КАРТОЙ И КОНТАКТАМИ -->
+    <section class="py-20 px-6 sm:px-12 md:px-20 max-w-7xl mx-auto reveal bg-white/40 relative z-10 backdrop-blur-sm lg:rounded-3xl lg:my-10">
+        <div class="flex items-center mb-10">
+            <h3 class="font-serif text-3xl sm:text-4xl uppercase text-luxury-gradient mr-8 shrink-0">Найти меня</h3>
+            <div class="flex-grow h-[1px] bg-gradient-to-r from-brand-pink-dark to-transparent opacity-50"></div>
+        </div>
+        
+        <div class="flex flex-col lg:flex-row gap-12 lg:gap-16">
+            <!-- Левая часть: Контакты -->
+            <div class="w-full lg:w-1/3 space-y-6">
+                <a href="tel:+79000000000" class="group flex items-center bg-white/60 p-6 rounded-3xl border border-white transition-all hover:shadow-xl hover:-translate-y-1">
+                    <div class="w-12 h-12 bg-brand-pink-dark text-white rounded-full flex items-center justify-center mr-6 shrink-0 shadow-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                    </div>
+                    <div>
+                        <span class="text-[10px] uppercase tracking-widest opacity-40 block mb-1">Позвонить</span>
+                        <span class="text-sm font-medium text-brand-black tracking-wide">+7 (900) 000-00-00</span>
+                    </div>
+                </a>
+
+                <a href="https://t.me/your_username" target="_blank" class="group flex items-center bg-white/60 p-6 rounded-3xl border border-white transition-all hover:shadow-xl hover:-translate-y-1">
+                    <div class="w-12 h-12 bg-brand-pink-dark text-white rounded-full flex items-center justify-center mr-6 shrink-0 shadow-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"></path><path d="M22 2 11 13"></path></svg>
+                    </div>
+                    <div>
+                        <span class="text-[10px] uppercase tracking-widest opacity-40 block mb-1">Telegram</span>
+                        <span class="text-sm font-medium text-brand-black tracking-wide">@appollix_nails</span>
+                    </div>
+                </a>
+
+                <a href="https://instagram.com/your_username" target="_blank" class="group flex items-center bg-white/60 p-6 rounded-3xl border border-white transition-all hover:shadow-xl hover:-translate-y-1">
+                    <div class="w-12 h-12 bg-brand-pink-dark text-white rounded-full flex items-center justify-center mr-6 shrink-0 shadow-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line></svg>
+                    </div>
+                    <div>
+                        <span class="text-[10px] uppercase tracking-widest opacity-40 block mb-1">Instagram</span>
+                        <span class="text-sm font-medium text-brand-black tracking-wide">@appollix.beauty</span>
+                    </div>
+                </a>
+
+                <div class="bg-brand-pink-dark/5 p-6 rounded-3xl border border-brand-pink-dark/10">
+                    <span class="text-[10px] uppercase tracking-widest opacity-40 block mb-2">Адрес</span>
+                    <p class="text-sm font-light italic leading-relaxed text-brand-grey-text">г. Санкт-Петербург,<br>ул. Спасский переулок, 15/24</p>
+                </div>
+            </div>
+
+            <!-- Правая часть: Яндекс Карта -->
+            <div class="w-full lg:w-2/3 h-[300px] sm:h-[450px] bg-white/60 rounded-3xl border border-white overflow-hidden shadow-2xl relative">
+                <iframe src="https://yandex.ru/map-widget/v1/?ll=30.324263%2C59.928731&z=16&pt=30.324263,59.928731,pm2rdl" width="100%" height="100%" frameborder="0" allowfullscreen="true" style="position:relative; filter: grayscale(0.2) contrast(1.1);"></iframe>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. FOOTER -->
+    <footer class="py-16 px-8 flex flex-col items-center reveal bg-white/40 relative z-10 backdrop-blur-sm">
+        <div class="flex items-center mb-10 w-full max-w-6xl">
+            <h3 class="font-serif text-3xl uppercase text-luxury-gradient mr-8 shrink-0">Studio</h3>
+            <div class="flex-grow h-[1px] bg-brand-pink-dark opacity-50"></div>
+        </div>
+        
+        <div class="mt-10 opacity-30 text-[10px] uppercase tracking-[0.4em] text-center">
+            <p>© 2024 Anna Appollix Nails Studio</p>
+        </div>
+    </footer>
+
+    <script>
+        function reveal() {
+            var reveals = document.querySelectorAll(".reveal");
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                var elementVisible = 80;
+                if (elementTop < windowHeight - elementVisible) {
+                    reveals[i].classList.add("active");
+                }
+            }
+        }
+        window.addEventListener("scroll", reveal);
+        window.onload = reveal;
+        
+        // Оптимизация скролла для iOS
+        document.addEventListener('touchstart', function() {}, {passive: true});
+    </script>
+
+</body>
+</html>
